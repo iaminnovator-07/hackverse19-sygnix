@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071018">
+  <title>VORTHYX · Earth Receiver</title>
+  <style>
+    :root{color-scheme:dark;--bg:#071018;--panel:#101b24;--line:#263541;--text:#e5edf0;--muted:#8798a3;--lime:#bafa62;--cyan:#6dd6e5;--red:#ff7584;--amber:#ffc86b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#19303c 0,transparent 58%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(760px,100%);margin:auto;padding:24px 16px calc(28px + env(safe-area-inset-bottom))}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.brand{font-weight:800;letter-spacing:.16em;font-size:13px}.brand em{font-style:normal;color:var(--lime)}.live{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:#65747e}.live.ok .dot{background:var(--lime);box-shadow:0 0 12px #bafa62}.live.bad .dot{background:var(--red)}h1{font-size:clamp(28px,8vw,42px);line-height:1.04;margin:0 0 8px;letter-spacing:-.04em}p.sub{margin:0 0 22px;color:var(--muted)}.eyebrow{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.stat,.panel,.node,.msg{background:linear-gradient(150deg,#12202a,#0d171f);border:1px solid var(--line);border-radius:12px}.stat{padding:13px 12px}.stat b{display:block;color:var(--lime);font-size:24px;font-variant-numeric:tabular-nums}.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.panel{padding:15px;margin:12px 0}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-title h2{font-size:14px;margin:0}.nodes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.node{display:flex;align-items:center;gap:9px;padding:10px;min-width:0}.node .lamp{width:9px;height:9px;border-radius:50%;background:#5d6c75;flex:none}.node.up .lamp{background:var(--lime);box-shadow:0 0 9px #bafa6280}.node strong,.node small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.node strong{font-size:12px}.node small{font-size:10px;color:var(--muted)}.links{display:flex;flex-wrap:wrap;gap:7px}.link{border:1px solid #35434c;border-radius:99px;padding:5px 9px;font-size:10px;color:var(--muted)}.link.up{border-color:#647d43;color:var(--lime)}.inbox{display:grid;gap:9px}.empty{color:var(--muted);padding:15px 0;font-size:13px}.msg{padding:12px}.msg-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.badge{font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:3px 7px;color:#111;background:var(--lime)}.badge.HIGH{background:var(--amber)}.badge.NORMAL{background:var(--cyan)}.badge.LOW{background:#a7b3bb}.verify{font-size:10px;color:var(--lime)}.payload{font-size:15px;overflow-wrap:anywhere;margin:9px 0 5px}.meta{color:var(--muted);font-size:10px}.footer{color:#687984;text-align:center;font-size:10px;padding:12px}.refresh{border:0;background:transparent;color:var(--muted);font:inherit;font-size:10px}@media(max-width:420px){.wrap{padding-inline:12px}.stats{gap:6px}.stat{padding:10px 8px}.stat b{font-size:21px}.stat span{font-size:9px}.nodes{gap:6px}.node{padding:9px 7px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top"><div class="brand"><em>V</em> VORTHYX <span style="color:#70818c">/ EARTH RECEIVER</span></div><div id="live" class="live"><i class="dot"></i><span>Connecting…</span></div></div>
+    <div class="eyebrow">ST-06 · DELAY-TOLERANT NETWORK</div>
+    <h1>Messages received<br>at Earth.</h1>
+    <p class="sub">Live bundles delivered through the ESP32 relay mesh.</p>
+    <section class="stats">
+      <div class="stat"><b id="connected">—</b><span>ESP32 boards online</span></div>
+      <div class="stat"><b id="linksUp">—</b><span>Links active</span></div>
+      <div class="stat"><b id="delivered">0</b><span>Delivered</span></div>
+    </section>
+    <section class="panel"><div class="section-title"><h2>Mesh nodes</h2><span class="eyebrow">Live status</span></div><div id="nodes" class="nodes"><div class="empty">Waiting for gateway data…</div></div></section>
+    <section class="panel"><div class="section-title"><h2>Active links</h2><span class="eyebrow">ESP-NOW</span></div><div id="links" class="links"><span class="empty">Waiting for link telemetry…</span></div></section>
+    <section class="panel"><div class="section-title"><h2>Received bundles</h2><button id="refresh" class="refresh" type="button">AUTO · 1 SEC</button></div><div id="inbox" class="inbox"><div class="empty">Send a test message from SAT-A, for example: <code>send 4 ENGINE FIRE</code></div></div></section>
+    <div class="footer">Bundle integrity is verified at the EARTH gateway · duplicate copies are rejected</div>
+  </main>
+  <script>
+    const $=id=>document.getElementById(id),names={0:"EARTH",1:"SAT-A",2:"RELAY-B",3:"RELAY-C"};
+    function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+    async function update(){try{const r=await fetch("/state?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("Gateway returned "+r.status);const d=await r.json(),nodes=d.nodes||[],links=d.links||[],m=d.metrics||{},remote=nodes.filter(n=>Number(n.id)!==0&&n.up),active=links.filter(l=>l.up);$("live").className="live ok";$("live").lastElementChild.textContent="LIVE · updated now";$("connected").textContent=remote.length+(Number(d.serial_ports)>0?1:0);$("linksUp").textContent=active.length;$("delivered").textContent=m.delivered||0;
+      $("nodes").innerHTML=nodes.map(n=>`<div class="node ${n.up?"up":""}"><i class="lamp"></i><div><strong>${esc(n.name||names[n.id]||("NODE-"+n.id))}</strong><small>${n.up?(Number(n.id)===0?"Laptop gateway · online":`${n.hops===255?"No route":(n.hops??"?")+" hops to Earth"} · queue ${n.q??0}`):"Not heard recently"}</small></div></div>`).join("")||'<div class="empty">No nodes have reported yet.</div>';
+      $("links").innerHTML=links.map(l=>`<span class="link ${l.up?"up":""}">${esc(l.a_name||names[l.a]||l.a)} ${l.up?"↔":"×"} ${esc(l.b_name||names[l.b]||l.b)} · ${l.up?"UP":"DOWN"}</span>`).join("")||'<span class="empty">No neighbour links reported yet.</span>';
+      const inbox=(d.inbox||[]).slice().reverse();$("inbox").innerHTML=inbox.length?inbox.map(b=>`<article class="msg"><div class="msg-top"><span class="badge ${esc(b.priority)}">${esc(b.priority)}</span><span class="verify">✓ SHA-256 verified · once</span></div><div class="payload">${esc(b.payload||"(empty bundle)")}</div><div class="meta">Bundle ${esc(b.bundle)} · via ${esc(String(b.path||"").split(">").map(x=>names[x]||("NODE-"+x)).join(" → ")||"Earth")} · queue age ${((Number(b.age_ms)||0)/1000).toFixed(2)} s</div></article>`).join(""):'<div class="empty">No bundles delivered yet. From SAT-A send <code>send 4 ENGINE FIRE</code>.</div>';
+    }catch(e){$("live").className="live bad";$("live").lastElementChild.textContent="GATEWAY OFFLINE";$("nodes").innerHTML='<div class="empty">Could not reach the laptop bridge. Check that bridge.py is running on this same address.</div>'}}
+    update();setInterval(update,1000);$("refresh").addEventListener("click",update);
+  </script>
+</body>
+</html>

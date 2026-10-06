@@ -1,0 +1,380 @@
+{
+  "family": {
+    "id": "family-sharma-001",
+    "name": "Sharma Family",
+    "plan": "MediRoute Family OS",
+    "abhaLinked": true,
+    "location": "Pune, India"
+  },
+  "currentUserId": "member-caregiver",
+  "members": [
+    {
+      "id": "member-caregiver",
+      "name": "Ananya Sharma",
+      "initials": "AS",
+      "role": "caregiver",
+      "relationship": "Primary caregiver",
+      "gender": "female",
+      "age": 42,
+      "bloodGroup": "B+",
+      "allergies": ["Dust"],
+      "conditions": ["Migraine"],
+      "emergencyContact": "+91 98765 43210",
+      "doctor": "Dr. Kavita Mehra",
+      "healthScore": 86,
+      "permissions": [
+        "view_family",
+        "manage_family",
+        "manage_medicines",
+        "view_records",
+        "manage_appointments",
+        "receive_sos",
+        "view_emergency_qr"
+      ],
+      "stats": [
+        { "label": "Family score", "value": "86", "hint": "Stable this week", "tone": "blue" },
+        { "label": "Active meds", "value": "12", "hint": "Across 5 members", "tone": "green" },
+        { "label": "Refill alerts", "value": "3", "hint": "Next 7 days", "tone": "amber" },
+        { "label": "SOS status", "value": "Ready", "hint": "QR profiles live", "tone": "rose" }
+      ]
+    },
+    {
+      "id": "member-women",
+      "name": "Priya Kumar",
+      "initials": "PK",
+      "role": "member",
+      "relationship": "Sister",
+      "gender": "female",
+      "age": 34,
+      "bloodGroup": "O+",
+      "allergies": ["Penicillin"],
+      "conditions": ["PCOS monitoring"],
+      "emergencyContact": "+91 91234 56789",
+      "doctor": "Dr. Nisha Rao",
+      "healthScore": 82,
+      "permissions": ["view_records", "view_emergency_qr"],
+      "stats": [
+        { "label": "Cycle day", "value": "14", "hint": "Fertile window", "tone": "rose" },
+        { "label": "Mood", "value": "Good", "hint": "Logged today", "tone": "purple" },
+        { "label": "Hydration", "value": "1.4 L", "hint": "70 percent", "tone": "cyan" },
+        { "label": "Care plan", "value": "3", "hint": "Active routines", "tone": "green" }
+      ]
+    },
+    {
+      "id": "member-elder",
+      "name": "Rajesh Kumar",
+      "initials": "RK",
+      "role": "member",
+      "relationship": "Grandfather",
+      "gender": "male",
+      "age": 68,
+      "bloodGroup": "O+",
+      "allergies": [],
+      "conditions": ["Hypertension", "Diabetes"],
+      "emergencyContact": "+91 99887 77665",
+      "doctor": "Dr. Anjali Sharma",
+      "healthScore": 89,
+      "permissions": ["view_records", "view_emergency_qr"],
+      "stats": [
+        { "label": "Wellness", "value": "Good", "hint": "Checked in", "tone": "green" },
+        { "label": "Adherence", "value": "92%", "hint": "7-day average", "tone": "blue" },
+        { "label": "Visits", "value": "2", "hint": "This month", "tone": "amber" },
+        { "label": "SOS", "value": "Stable", "hint": "Contacts ready", "tone": "rose" }
+      ]
+    },
+    {
+      "id": "member-young",
+      "name": "Aryan Rao",
+      "initials": "AR",
+      "role": "member",
+      "relationship": "Son",
+      "gender": "male",
+      "age": 21,
+      "bloodGroup": "B+",
+      "allergies": ["Grass pollen"],
+      "conditions": ["Exercise-induced asthma"],
+      "emergencyContact": "+91 88776 65544",
+      "doctor": "Dr. Mehul Shah",
+      "healthScore": 78,
+      "permissions": ["view_records", "view_emergency_qr"],
+      "stats": [
+        { "label": "Stress", "value": "42%", "hint": "Lower than yesterday", "tone": "purple" },
+        { "label": "Sleep", "value": "7.2h", "hint": "Good recovery", "tone": "blue" },
+        { "label": "Water", "value": "5/8", "hint": "Glasses today", "tone": "cyan" },
+        { "label": "Move", "value": "42m", "hint": "Activity minutes", "tone": "green" }
+      ]
+    },
+    {
+      "id": "member-child",
+      "name": "Aarav Sharma",
+      "initials": "AA",
+      "role": "member",
+      "relationship": "Child",
+      "gender": "male",
+      "age": 8,
+      "bloodGroup": "A+",
+      "allergies": ["Peanuts"],
+      "conditions": ["Seasonal wheeze"],
+      "emergencyContact": "+91 98765 43210",
+      "doctor": "Dr. Ritu Sane",
+      "healthScore": 91,
+      "permissions": ["view_emergency_qr"],
+      "stats": [
+        { "label": "Vaccines", "value": "1 due", "hint": "Next month", "tone": "amber" },
+        { "label": "Growth", "value": "68th", "hint": "Percentile", "tone": "green" },
+        { "label": "Records", "value": "12", "hint": "Pediatric files", "tone": "blue" },
+        { "label": "Allergy", "value": "Peanut", "hint": "Emergency flag", "tone": "rose" }
+      ]
+    },
+    {
+      "id": "member-adult",
+      "name": "Rohan Sharma",
+      "initials": "RS",
+      "role": "member",
+      "relationship": "Father",
+      "gender": "male",
+      "age": 45,
+      "bloodGroup": "AB+",
+      "allergies": [],
+      "conditions": ["Borderline cholesterol"],
+      "emergencyContact": "+91 97654 32109",
+      "doctor": "Dr. Sameer Iyer",
+      "healthScore": 80,
+      "permissions": ["view_records", "view_emergency_qr"],
+      "stats": [
+        { "label": "Heart", "value": "72 bpm", "hint": "Resting", "tone": "green" },
+        { "label": "Sleep", "value": "6.8h", "hint": "Needs consistency", "tone": "blue" },
+        { "label": "Activity", "value": "5.4k", "hint": "Steps today", "tone": "cyan" },
+        { "label": "Risk", "value": "Low", "hint": "Monitored", "tone": "amber" }
+      ]
+    }
+  ],
+  "medicines": [
+    {
+      "id": "med-1",
+      "memberId": "member-elder",
+      "name": "Telmisartan 40mg",
+      "dosage": "1 tablet after breakfast",
+      "schedule": "8:00 AM",
+      "adherence": 94,
+      "refillInDays": 4,
+      "status": "refill"
+    },
+    {
+      "id": "med-2",
+      "memberId": "member-elder",
+      "name": "Metformin 500mg",
+      "dosage": "1 tablet after dinner",
+      "schedule": "8:30 PM",
+      "adherence": 91,
+      "refillInDays": 12,
+      "status": "stable"
+    },
+    {
+      "id": "med-3",
+      "memberId": "member-women",
+      "name": "Folic Acid",
+      "dosage": "1 tablet daily",
+      "schedule": "9:00 AM",
+      "adherence": 86,
+      "refillInDays": 7,
+      "status": "due"
+    },
+    {
+      "id": "med-4",
+      "memberId": "member-child",
+      "name": "Salbutamol Inhaler",
+      "dosage": "As needed",
+      "schedule": "Emergency",
+      "adherence": 100,
+      "refillInDays": 25,
+      "status": "stable"
+    },
+    {
+      "id": "med-5",
+      "memberId": "member-young",
+      "name": "Inhaler PRN",
+      "dosage": "Before intense activity",
+      "schedule": "As needed",
+      "adherence": 88,
+      "refillInDays": 18,
+      "status": "stable"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "appt-1",
+      "memberId": "member-elder",
+      "doctor": "Dr. Anjali Sharma",
+      "specialty": "Cardiology follow-up",
+      "date": "Jun 18, 2026",
+      "location": "City Care Hospital"
+    },
+    {
+      "id": "appt-2",
+      "memberId": "member-women",
+      "doctor": "Dr. Nisha Rao",
+      "specialty": "Women wellness review",
+      "date": "Jun 24, 2026",
+      "location": "Lotus Health Clinic"
+    },
+    {
+      "id": "appt-3",
+      "memberId": "member-child",
+      "doctor": "Dr. Ritu Sane",
+      "specialty": "Vaccination visit",
+      "date": "Jul 03, 2026",
+      "location": "Pediatric Care"
+    }
+  ],
+  "records": [
+    {
+      "id": "rec-1",
+      "memberId": "member-elder",
+      "title": "Cardiology prescription",
+      "type": "prescription",
+      "date": "Jun 02, 2026",
+      "summary": "BP medicine updated and refill reminder enabled."
+    },
+    {
+      "id": "rec-2",
+      "memberId": "member-women",
+      "title": "Hormone panel",
+      "type": "lab",
+      "date": "May 28, 2026",
+      "summary": "Cycle and nutrition plan reviewed."
+    },
+    {
+      "id": "rec-3",
+      "memberId": "member-child",
+      "title": "MMR booster",
+      "type": "vaccination",
+      "date": "Apr 14, 2026",
+      "summary": "Next pediatric vaccine scheduled."
+    },
+    {
+      "id": "rec-4",
+      "memberId": "member-caregiver",
+      "title": "Family ABHA sync",
+      "type": "note",
+      "date": "Jun 12, 2026",
+      "summary": "Emergency QR profiles prepared for all members."
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alert-1",
+      "memberId": "member-elder",
+      "title": "Refill due soon",
+      "body": "Telmisartan stock reaches threshold in 4 days.",
+      "severity": "warning"
+    },
+    {
+      "id": "alert-2",
+      "memberId": "member-child",
+      "title": "Allergy flag",
+      "body": "Peanut allergy is visible in emergency QR.",
+      "severity": "critical"
+    },
+    {
+      "id": "alert-3",
+      "memberId": "member-women",
+      "title": "Cycle insight",
+      "body": "Fertile window is active. Hydration goal updated.",
+      "severity": "info"
+    },
+    {
+      "id": "alert-4",
+      "memberId": "member-caregiver",
+      "title": "Family records secured",
+      "body": "4 health records are ready for backend sync.",
+      "severity": "success"
+    }
+  ],
+  "devices": [
+    {
+      "id": "device-1",
+      "memberId": "member-elder",
+      "name": "Smart Pill Box",
+      "kind": "pillbox",
+      "status": "connected",
+      "battery": "82%"
+    },
+    {
+      "id": "device-2",
+      "memberId": "member-elder",
+      "name": "BP Monitor",
+      "kind": "bp",
+      "status": "syncing",
+      "battery": "64%"
+    },
+    {
+      "id": "device-3",
+      "memberId": "member-young",
+      "name": "Wellness Watch",
+      "kind": "watch",
+      "status": "connected",
+      "battery": "76%"
+    },
+    {
+      "id": "device-4",
+      "memberId": "member-caregiver",
+      "name": "Voice Reminder Device",
+      "kind": "voice",
+      "status": "connected",
+      "battery": "91%"
+    }
+  ],
+  "womenHealth": {
+    "member-women": {
+      "cycleDay": 14,
+      "nextPeriod": "Jun 26",
+      "fertileWindow": "Active",
+      "pregnancyWeek": 18,
+      "mood": "Good",
+      "water": "1.4 / 2 L",
+      "nutrition": ["Iron-rich breakfast", "Hydration every 2 hours", "Protein with lunch"],
+      "lifestyle": ["Light walk", "Breathing pause", "Sleep by 10:45 PM"]
+    },
+    "member-caregiver": {
+      "cycleDay": 22,
+      "nextPeriod": "Jul 02",
+      "fertileWindow": "Low",
+      "pregnancyWeek": null,
+      "mood": "Focused",
+      "water": "1.7 / 2 L",
+      "nutrition": ["Magnesium-rich dinner", "Reduce caffeine after 4 PM"],
+      "lifestyle": ["Stretch break", "Migraine trigger log"]
+    }
+  },
+  "youngHealth": {
+    "member-young": {
+      "level": 7,
+      "xp": 1240,
+      "xpGoal": 2000,
+      "streak": 14,
+      "stress": 42,
+      "sleepHours": 7.2,
+      "waterGlasses": 5,
+      "activityMinutes": 42,
+      "insights": ["Stress is down 12 percent", "Sleep consistency improved", "Hydration needs 3 more glasses"]
+    }
+  },
+  "childHealth": {
+    "member-child": {
+      "height": "128 cm",
+      "weight": "25 kg",
+      "nextVaccine": "Tdap booster",
+      "growthPercentile": "68th",
+      "milestones": ["Annual pediatric review done", "Wheezing plan updated", "Dental check due"]
+    }
+  },
+  "elderHealth": {
+    "member-elder": {
+      "wellnessStatus": "Good",
+      "voiceReminder": "Daughter voice selected",
+      "lastCheckin": "Today, 8:10 AM",
+      "fallRisk": "Low"
+    }
+  }
+}
