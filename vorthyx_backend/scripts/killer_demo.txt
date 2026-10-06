@@ -1,0 +1,27 @@
+# Manual "killer demo" for the interactive shell:  python simulator.py shell --script scripts/killer_demo.txt
+# (or type these lines yourself:  python simulator.py shell)
+live 1
+gen 100
+run 40
+status
+kill B D
+run 20
+alert
+run 60
+kill D E
+kill C E
+run 60
+alert
+queues SAT-A
+route ALERT-2
+run 100
+restore D E
+corrupt
+dup
+run 120
+replay
+run 50
+finish
+metrics
+trace ALERT-2
+quit

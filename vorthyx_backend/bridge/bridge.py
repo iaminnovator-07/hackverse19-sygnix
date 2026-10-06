@@ -19,13 +19,14 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
 import threading
 import time
 from collections import Counter, deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
+
+from bridge.port_discovery import discover_ports, resolve_node_port, scan_ports
 
 PRIO = {4: "CRITICAL", 3: "HIGH", 2: "NORMAL", 1: "LOW"}
 NAMES = {0: "EARTH", 1: "SAT-A", 2: "RELAY-B", 3: "RELAY-C", 4: "RELAY-D", 5: "RELAY-E", 6: "RELAY-F", 7: "RELAY-G"}
@@ -177,14 +178,8 @@ class MeshState:
                 "by_priority": {PRIO[p]: {"delivered": v["n"], "avg_age_ms": (v["age"] / v["n"]) if v["n"] else 0,
                                           "max_age_ms": v["max"]} for p, v in self.by_prio.items()},
             }
-            inbox = [
-                {"bundle": e.get("b"), "priority": PRIO.get(e.get("p"), "UNKNOWN"),
-                 "payload": e.get("txt", ""), "path": e.get("path", ""),
-                 "age_ms": e.get("age", 0), "verified": True}
-                for e in list(self.delivered.values())[-40:]
-            ]
             return {"source": "hardware", "device_time_ms": self.now_dev, "nodes": nodes, "links": links,
-                    "metrics": metrics, "events": list(self.events)[-last_events:], "inbox": inbox}
+                    "metrics": metrics, "events": list(self.events)[-last_events:]}
 
     def print_stats(self):
         s = self.snapshot()
@@ -234,7 +229,7 @@ class SerialPort(threading.Thread):
         self.ser.write((line.strip() + "\n").encode())
 
 
-def start_http(state: MeshState, writer, port: int, port_count: int):
+def start_http(state: MeshState, writer, port: int):
     class H(BaseHTTPRequestHandler):
         def _send(self, code, obj):
             body = json.dumps(obj).encode()
@@ -245,14 +240,6 @@ def start_http(state: MeshState, writer, port: int, port_count: int):
             self.end_headers()
             self.wfile.write(body)
 
-        def _send_html(self, code, body):
-            data = body.encode("utf-8")
-            self.send_response(code)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(data)))
-            self.end_headers()
-            self.wfile.write(data)
-
         def do_OPTIONS(self):
             self.send_response(204)
             self.send_header("Access-Control-Allow-Origin", "*")
@@ -260,37 +247,25 @@ def start_http(state: MeshState, writer, port: int, port_count: int):
             self.end_headers()
 
         def do_GET(self):
-            path = urlparse(self.path).path
-            if path == "/phone":
-                page = Path(__file__).resolve().parents[2] / "phone_receiver.html"
-                try:
-                    self._send_html(200, page.read_text(encoding="utf-8"))
-                except OSError:
-                    self._send(404, {"error": "phone_receiver.html is missing from the project root"})
-            elif path == "/state":
-                snapshot = state.snapshot()
-                snapshot["serial_ports"] = port_count
-                self._send(200, snapshot)
+            u = urlparse(self.path)
+            if u.path == "/state":
+                self._send(200, state.snapshot())
+            elif u.path == "/ports":
+                self._send(200, {"ports": discover_ports()})
             else:
-                self._send(404, {"error": "use /state, /phone, or POST /cmd?line=kill+2+3"})
+                self._send(404, {"error": "use /state, /ports, or POST /cmd?line=kill+2+3"})
 
         def do_POST(self):
             u = urlparse(self.path)
             if u.path == "/cmd":
-                params = parse_qs(u.query)
-                line = params.get("line", [""])[0]
-                try:
-                    target = int(params.get("port", ["0"])[0])
-                except ValueError:
-                    self._send(400, {"error": "port must be a serial index"})
-                    return
-                if writer and line and 0 <= target < port_count:
-                    writer(line, target)
-                    self._send(200, {"sent": line, "port": target})
-                elif target < 0 or target >= port_count:
-                    self._send(400, {"error": f"serial port {target} unavailable; connected ports: {port_count}"})
+                line = parse_qs(u.query).get("line", [""])[0]
+                if writer and line:
+                    writer(line)
+                    self._send(200, {"sent": line})
                 else:
                     self._send(400, {"error": "no serial port / empty line"})
+            elif u.path == "/ports/scan":
+                self._send(200, scan_ports())
             else:
                 self._send(404, {"error": "unknown"})
 
@@ -305,6 +280,7 @@ def start_http(state: MeshState, writer, port: int, port_count: int):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--serial", action="append", help="serial port of an ESP32 (repeat for several). First = EARTH gateway")
+    ap.add_argument("--node", help="logical node to connect, e.g. SAT-A, RELAY-B, EARTH-C")
     ap.add_argument("--baud", type=int, default=115200)
     ap.add_argument("--replay", help="replay a transcript file instead of hardware")
     ap.add_argument("--speed", type=float, default=0.0, help="replay speed (0 = instant, 1 = real time)")
@@ -317,12 +293,12 @@ def main():
     state = MeshState(color=sys.stdout.isatty() and not a.no_color)
     ports: list[SerialPort] = []
 
-    def write(line: str, target: int = 0):
-        if 0 <= target < len(ports):
-            ports[target].write(line)
+    def write(line: str):
+        if ports:
+            ports[0].write(line)
 
     if a.http:
-        start_http(state, write if a.serial else None, a.http, len(a.serial or []))
+        start_http(state, write if ports or a.serial else None, a.http)
 
     if a.replay:
         last_t = None
@@ -342,8 +318,22 @@ def main():
                 time.sleep(1)
         return
 
+    if a.serial and a.node:
+        ap.error("choose either --serial PORT or --node NODE, not both")
+    if a.node:
+        resolved = resolve_node_port(a.node)
+        if not resolved:
+            discovered = scan_ports()
+            resolved = resolve_node_port(a.node, discovered.get("ports", []))
+        if not resolved:
+            ap.error(f"no ESP32 discovered for node {a.node}; run a scan or pass --serial PORT")
+        a.serial = [resolved]
+    if a.serial:
+        bad = [p for p in a.serial if str(p).upper() == "COM_EARTH"]
+        if bad:
+            ap.error("COM_EARTH is not a literal serial port. Use --node SAT-A / RELAY-B / EARTH-C or scan for hardware.")
     if not a.serial:
-        ap.error("give --serial PORT (or --replay FILE)")
+        ap.error("give --serial PORT, --node SAT-A, or --replay FILE")
     for p in a.serial:
         sp = SerialPort(p, a.baud, state)
         sp.start()
